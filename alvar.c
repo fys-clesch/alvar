@@ -4,8 +4,20 @@
  * Contact: clesch(at)fysik.dtu.dk
  * Purpose: Load a data file, compute the Allan variance of each odd column and print the results to a file.
  *
- * Distribute and share this however you like...
- * But I'm always happy to receive any kind of feedback or credit.
+ * This file is part of alvar.
+ * 
+ * alvar is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * alvar is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with alvar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**@TODO:
