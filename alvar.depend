@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1417268346 source:/home/cs/Dropbox/DTU/progs/allan_variance/alvar.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<assert.h>
+	<time.h>
+	<omp.h>
+	<sys/stat.h>
+
+1438344271 source:c:\users\clesch\dropbox\dtu\progs\allan_variance\alvar.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<assert.h>
+	<time.h>
+	<omp.h>
+	<sys/stat.h>
+
