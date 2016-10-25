@@ -5,17 +5,17 @@
  * Purpose: Load a data file, compute the Allan variance of each odd column and print the results to a file.
  *
  * This file is part of alvar.
- * 
+ *
  * alvar is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * alvar is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with alvar.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -401,7 +401,7 @@ uint fpfile2double(const char *__restrict fname, double *__restrict out, const u
 		}
 		else if(tc == '0' || tc == '1' || tc == '2' || tc == '3' || tc == '4' ||
 				tc == '5' || tc == '6' || tc == '7' || tc == '8' || tc == '9' ||
-				tc == '.' || tc == '-' || tc == 'e' || tc == 'E')
+				tc == '.' || tc == '-' || tc == '+' || tc == 'e' || tc == 'E')
 		{
 			fsetpos(readfile, &pos); /**< Undo the reading in 'while' */
 			while(fscanf(readfile, "%18lg", &temp) != EOF)
@@ -521,7 +521,7 @@ void count_entries(char *__restrict fname,
 		}
 		else if(tc == '0' || tc == '1' || tc == '2' || tc == '3' || tc == '4' ||
 				tc == '5' || tc == '6' || tc == '7' || tc == '8' || tc == '9' ||
-				tc == '.' || tc == '-' || tc == 'e' || tc == 'E')
+				tc == '.' || tc == '-' || tc == '+' || tc == 'e' || tc == 'E')
 			wspace = lbreak = 0; /**< Got an entry */
 		else if(tc == ' ' || tc == '\t')
 		{
