@@ -1,7 +1,7 @@
 /**
  * Author: Clemens Sch\"afermeier
  * Release: 2014/11/20
- * Contact: clesch(at)fysik.dtu.dk
+ * Contact: clemens(at)fh-muenster.de
  * Purpose: Load a data file, compute the Allan variance of each odd column and print the results to a file.
  *
  * This file is part of alvar.
