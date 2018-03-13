@@ -399,26 +399,25 @@ uint fpfile2double(const char *__restrict fname, double *__restrict out, const u
     uint i = 0, j = 0, s = 0, ncom = 0;
     char templongstr[512] = {0}; /**< Assuming a line is not longer than 512. No check yet. */
     const char cmt = '#';
-    double temp;
     fpos_t pos;
+    fgetpos(readfile, &pos); /**< Backup for future implementations */
 
-    fgetpos(readfile, &pos);
-
-    while(fscanf(readfile, " %511[^ \n]", templongstr) != EOF)
+    while(fscanf(readfile, " %511[^\n]", templongstr) != EOF) /**< The actual break is not read, it will be consumed in the next turn */
     {
-        char tc = templongstr[0]; /**< First non whitespace character */
+        char tc = templongstr[0]; /**< First non-whitespace character */
         if(tc == cmt)
-            ncom++; /**< The actual break is not read */
+            ncom++;
         else if(tc == '0' || tc == '1' || tc == '2' || tc == '3' || tc == '4' ||
                 tc == '5' || tc == '6' || tc == '7' || tc == '8' || tc == '9' ||
                 tc == '.' || tc == '-' || tc == '+' || tc == 'e' || tc == 'E')
         {
-            /* Now let's read the line: */
+            /* Now let's convert the line: */
             char tempstr[64] = {0};
-            int readitem = sscanf(templongstr, " %63[^ ;,\t\n\40]", tempstr),
+            int readitem = sscanf(templongstr, " %63[^;,\t\n\40]", tempstr), /**< \40 is octal for whitespace */
                 readpos = 0;
-            while(readitem > 0) /**< readitem reads only one item at a time */
+            while(readitem > 0) /**< readitem should only read 1 or 0 */
             {
+                double temp;
                 sscanf(tempstr, "%lf", &temp);
                 out[i * col + j] = temp;
                 if(j < (col - 1))
@@ -431,12 +430,12 @@ uint fpfile2double(const char *__restrict fname, double *__restrict out, const u
                 s++;
                 readpos += strlen(tempstr) + 1; /**< Add one to remove the separator */
                 memset(&tempstr[0], 0, sizeof(tempstr));
-                readitem = sscanf(&templongstr[readpos], " %63[^ ;,\t\n\40]", tempstr);
+                readitem = sscanf(&templongstr[readpos], " %63[^;,\t\n\40]", tempstr);
             }
         }
         else
         {
-            ERR_INTRO "reading error: line content '%s'. Could not understand '%c'\n",
+            ERR_INTRO "reading error: line content '%s'. could not understand '%c'\n",
                       ERR_ARG, templongstr, tc);
             fclose(readfile);
             return 0;
