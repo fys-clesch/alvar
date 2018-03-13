@@ -1,5 +1,5 @@
 
-Copyright 2015 Clemens Schäfermeier, clemens ( at ) fh-muenster.de
+Copyright 2015-2018 Clemens Schäfermeier, clemens ( at ) fh-muenster.de
 
     This file is part of alvar.
 
