@@ -115,8 +115,8 @@ int main(int argc, char **argv)
         double *(alvar[ncol >> 1]),
                *(bins[ncol >> 1]);
 
-        /**> Main loop starts here */
-        show_progress(0, 0,  ncol >> 1);
+        /**> Main loop starts here. It loops over the columns. */
+        show_progress(0, 0, ncol >> 1);
         for(i = 0; i < ncol; i++)
         {
             if(!(i & 1)) /**< Only odd columns contain data, the even ones hold time stamps */
@@ -538,7 +538,11 @@ void count_entries(char *__restrict fname,
             if(cmt_lines != NULL)
                 cmt_lines[ncom] = *ncol; /**< This can be used as a locater for comment lines */
             ncom++;
-            fscanf(file, "%*[^\n]\n"); /**< Carry on scanning until line break */
+            /* Carry on scanning until EOF or line break. More robust than fscanf(file, "%*[^\n]\n");
+               E.g. in case of '#' lines. */
+            while(fscanf(file, "%c", &tc) != EOF)
+                if(tc == '\n')
+                    break;
             if(feof(file))
             {
                 ERR_INTRO "End-of-File reached, no comment allowed at last line\n", ERR_ARG);
@@ -549,7 +553,7 @@ void count_entries(char *__restrict fname,
         {
             if(lbreak)
                 break; /**< This happens in case of an additional line break at the end of the file */
-            i++; /**< The counter */
+            i++; /**< The counter of linebreaks */
             if(!sum)
                 *ncol = sum = i; /**< First line break */
             else if((sum += *ncol) != i)
@@ -724,25 +728,19 @@ double *malloc_double(const uint size)
 char *replace_char(const char *str_in, const char find, const char replace)
 {
     char *ret = strdup(str_in),
-         *s = strdup(str_in);
-    while(*s != 0)
+         *current_pos = strchr(ret, find);
+    while(current_pos)
     {
-        if(*s == find)
-        {
-            *ret++ = replace;
-            ++s;
-        }
-        else
-            *ret++ = *s++;
+        *current_pos = replace;
+        current_pos = strchr(current_pos, find);
     }
-    *ret = '\0';
     return ret;
 }
 
 
 void plotdata(const char *__restrict fname, const uint ncol)
 {
-    const char *cmdtmp = "this_is_just_a_temporary_thing";
+    const char *cmdtmp = "alvar_this_is_just_a_temporary_thing";
 
     FILE *gnufile = fopen(cmdtmp, "w");
     if(gnufile == NULL)
@@ -751,7 +749,8 @@ void plotdata(const char *__restrict fname, const uint ncol)
         exit(EXIT_FAILURE);
     }
 
-    char timebuf[20], *plttitle;
+    char timebuf[20],
+         *plttitle;
     {
         time_t tt;
         time(&tt);
@@ -768,22 +767,27 @@ void plotdata(const char *__restrict fname, const uint ncol)
             "set log xy\n" \
             "set format y '%%g'\n" \
             "set format x '%%g'\n" \
-            "set ylabel '{/Symbol s}_y^2'\n" \
-            "set xlabel 'Bin length'\n" \
-            "set title '%s'\n" \
+            "set yl '{/Symbol s}_y^2'\n" \
+            "set xl 'Bin length'\n" \
+            "set title 'Allan variance %s'\n" \
             "set out '%s.ps'\n" \
-            "plot ", plttitle, timebuf);
+            "plot ",
+            plttitle, timebuf);
 
     uint i;
     for(i = 0; i < ncol >> 1; i++)
-        fprintf(gnufile, "'%s' every ::2 using %u:%u w l t 'Column %u'%c",
-                fname, (i << 1) + 1, (i << 1) + 2, i + 1, i == (ncol >> 1) - 1 ? '\n' : ',');
+        fprintf(gnufile, "'%s' every ::2 u %u:%u w l lt 2 t 'Column %u'%c",
+                fname,
+                (i << 1) + 1,
+                (i << 1) + 2,
+                i + 1,
+                i == (ncol >> 1) - 1 ? '\n' : ',');
 
     fclose(gnufile);
 
     fprintf(stdout, "gnuplot message: ");
     fflush(stdout);
-    i = system("gnuplot this_is_just_a_temporary_thing");
+    i = system("gnuplot alvar_this_is_just_a_temporary_thing");
     if(i)
         fprintf(stderr, "\ngnuplot command returned '1' -- the plotting went wrong!\n");
     else
